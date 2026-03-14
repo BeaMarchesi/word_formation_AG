@@ -4,7 +4,7 @@ from utils import BRAND_COLOR, render_sidebar_logos
 
 apply_style()
 
-LOGO_PATH = '/Users/beatrice/Desktop/PycharmProjects/Tesi IUSS/Website/Images/logo_larl_rosso.png'
+LOGO_PATH = 'Website/Images/logo_larl_rosso.png'
 LOGO_LINK = 'https://linguisticapavia.cdl.unipv.it/it'
 st.logo(LOGO_PATH, size='large', link=LOGO_LINK, icon_image=None)
 
