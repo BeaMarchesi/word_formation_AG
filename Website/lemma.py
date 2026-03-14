@@ -9,7 +9,7 @@ from style import apply_style
 
 apply_style()
 
-CSV_PATH = 'Website/kb.csv'
+CSV_PATH = 'kb.csv'
 LOGO_PATH = 'Website/Images/logo_larl_rosso.png'
 LOGO_LINK = 'https://www.facebook.com/groups/251278298330026/?locale=it_IT'
 
