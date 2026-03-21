@@ -8,23 +8,11 @@ render_top_right_logos([
     {'path': 'Website/Images/90690393.png', 'url': 'https://www.unipv.it',                  'alt': 'UniPV'},
 ])
 
-pages = {
-    "": [
-        st.Page("home_page.py", title="Home", default=True)
-    ],
+home = st.Page("home_page.py", title="Home",default=True)
+entry = st.Page("entry_search.py", title="Search by entry")
+derivation = st.Page("derivation_search.py", title="Search by composition or derivation")
 
-    "Basic search": [
-            st.Page("lemma.py", title="Search by lemma"),
-            st.Page("POS+affix.py",  title="Search by part of speech and affix"),
-        ],
+pg = st.navigation([home, entry, derivation])
 
-    "Search by composition or derivation": [
-        st.Page("lemma+POS.py", title="Search by lemma and part of speech"),
-        st.Page("lemma+affix.py", title="Search by lemma and affix"),
-        st.Page("conversion.py", title="Search by conversion"),
-    ],
-}
-
-pg = st.navigation(pages)
 pg.run()
 
