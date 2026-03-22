@@ -14,6 +14,7 @@ LOGO_PATH = 'Website/Images/logo_larl_rosso.png'
 LOGO_LINK = 'https://www.facebook.com/groups/251278298330026/?locale=it_IT'
 
 
+
 @st.cache_data(show_spinner=False)
 def load_data() -> pd.DataFrame:
     from ast import literal_eval
