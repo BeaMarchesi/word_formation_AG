@@ -112,14 +112,14 @@ def create_export(results: pd.DataFrame) -> bytes:
         'Lemma': results['lemma'],
         'Meaning': results['meaning'].fillna(''),
         'LSJ Link': results['url'].apply(clean_url),
-        'Derivation': results['etymology'].fillna(''),
+        'Derivation': results['derivation'].fillna(''),
         'Part of speech': results['part_of_speech'].fillna(''),
         'Prefix': results['prefix'].apply(
             lambda p: f"{'-, '.join(p)}-" if isinstance(p, list) and p else ''
         ),
-        'Suffix': results['suffix_ag'].apply(
-            lambda s: f'-{s}' if isinstance(s, str) else ''
-        ),
+        #'Suffix': results['suffix_ag'].apply(
+            #lambda s: f'-{s}' if isinstance(s, str) else ''
+        #),
     })
     return export.to_csv(index=False).encode('utf-8')
 
@@ -144,11 +144,11 @@ def render_results(results: pd.DataFrame, page_key: str = '_page') -> None:
     # ── Summary table (only when results are numerous enough to warrant it) ──
     if total >= SUMMARY_THRESHOLD:
         st.dataframe(
-            results[['lemma', 'meaning', 'part_of_speech', 'etymology']].rename(columns={
+            results[['lemma', 'meaning', 'part_of_speech', 'derivation']].rename(columns={
                 'lemma': 'Lemma',
                 'meaning': 'Meaning',
                 'part_of_speech': 'Part of speech',
-                'etymology': 'Derivation base',
+                'derivation': 'Derivation base',
             }).fillna(''),
             use_container_width=True,
             hide_index=True,
@@ -237,7 +237,7 @@ def render_results(results: pd.DataFrame, page_key: str = '_page') -> None:
         col1, col2 = st.columns(2)
         with col1:
             st.markdown(field_label('Derivation base'), unsafe_allow_html=True)
-            st.text(row['etymology'] if isinstance(row['etymology'], str) else '—')
+            st.text(row['derivation'] if isinstance(row['derivation'], str) else '—')
         with col2:
             st.markdown(field_label('Part of speech'), unsafe_allow_html=True)
             st.text(row['part_of_speech'] if isinstance(row['part_of_speech'], str) else '—')
@@ -250,8 +250,8 @@ def render_results(results: pd.DataFrame, page_key: str = '_page') -> None:
                 st.text(f"{'-, '.join(row['prefix'])}-")
             else:
                 st.text('—')
-        with col4:
-            st.markdown(field_label('Suffix'), unsafe_allow_html=True)
-            st.text(f"-{row['suffix_ag']}" if isinstance(row['suffix_ag'], str) else '—')
+        #with col4:
+            #st.markdown(field_label('Suffix'), unsafe_allow_html=True)
+            #st.text(f"-{row['suffix_ag']}" if isinstance(row['suffix_ag'], str) else '—')
 
         st.divider()
