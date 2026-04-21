@@ -80,7 +80,7 @@ st.markdown("""
 The database supports two query modes: **by entry** and **by derivation/composition**.
 
 Depending on the mode, searchable parameters include lemma, part of speech, prefix, suffix,
-derivation base(s), base POS, and number of bases. Results are displayed both as an overview
+derivational/compositional lexeme(s)/, lexeme POS, and number of lexemes. Results are displayed both as an overview
 table and as individual detailed records, showing all available data for each match. 
 Query results can be exported as CSV.
 """)
@@ -109,8 +109,8 @@ st.markdown(f"<h3 style='color: {BRAND_COLOR};'>Contacts</h3>", unsafe_allow_htm
 st.markdown("""
 For enquiries or to report issues, please contact:
 
-- **Dr Chiara Zanchi** — [chiara.zanchi@unipv.it](mailto:chiara.zanchi@unipv.it)
-- **Dr Virginia Mastellari** — [virginia.mastellari@unipv.it](mailto:virginia.mastellari@unipv.it)
+- **Prof. Chiara Zanchi** — [chiara.zanchi@unipv.it](mailto:chiara.zanchi@unipv.it)
+- **Prof. Virginia Mastellari** — [virginia.mastellari@unipv.it](mailto:virginia.mastellari@unipv.it)
 """)
 
 st.divider()
@@ -122,7 +122,7 @@ st.markdown(f"<h3 style='color: {BRAND_COLOR};'>Contribute</h3>", unsafe_allow_h
 st.markdown("""
 We welcome contributions of new data. If you would like to share annotations or corrections,
 please download the CSV template below, structure your data accordingly, and contact
-Dr Zanchi or Dr Mastellari. Contributors who share data will be acknowledged in the Team section.
+Prof. Zanchi or Prof. Mastellari. Contributors who share data will be acknowledged in the Team section.
 """)
 
 df = pd.read_csv('Website/template.csv', sep =';')

@@ -11,10 +11,12 @@ LOGO_PATH   = 'Website/Images/logo_larl_rosso.png'
 LOGO_LINK   = 'https://www.facebook.com/groups/251278298330026/?locale=it_IT'
 
 POS_OPTIONS = (
-    'Any', 'adjective', 'verb', 'noun', 'adverb', 'verb participle',
-    'article', 'conjunction', 'preposition', 'pronoun', 'particle',
-    'numeral', 'irregular', 'exclamation',
+    'Any', 'Adjective', 'Verb', 'Noun', 'Adverb',
+    'Determiner', 'Conjunction', 'Preposition', 'Pronoun', 'Particle',
+    'Numeral', 'Punctuation', 'Interjection', 'Proper noun',
+    'Affix', 'Other', 'Symbol', 'Phrase', 'Contraction'
 )
+
 
 MIN_BASES = 2
 MAX_BASES = 6  # Maximum derivation_raw length in the database
@@ -33,6 +35,9 @@ def load_data() -> pd.DataFrame:
             'prefix':              literal_eval,
             'derivation_betacode': literal_eval,
             'prefix_betacode':     literal_eval,
+            'suffix': literal_eval,
+            'suffix_betacode': literal_eval,
+            'part_of_speech': literal_eval,
         },
     )
 
@@ -49,16 +54,16 @@ def load_data() -> pd.DataFrame:
 @st.cache_data(show_spinner=False)
 def load_filter_options() -> tuple[list, list]:
     prefixes  = sorted(pd.read_csv('Website/unique_prefixes.csv')['prefix'].tolist())
+    suffixes = pd.read_csv('Website/unique_suffixes.csv')['suffix'].tolist()
     compounds = sorted(
         pd.read_csv('Website/unique_bases.csv')['base'].tolist(),
         key=str.casefold,
     )
-    return prefixes, compounds
+    return prefixes, suffixes, compounds
 
 
 @st.cache_data(show_spinner=False)
-def build_pos_lookup(lemma_raw: pd.Series, pos: pd.Series) -> dict[str, str]:
-    """Map each lemma_raw value to its POS tag (NFC-normalised, quotes stripped)."""
+def build_pos_lookup(lemma_raw: pd.Series, pos: pd.Series) -> dict[str, list[str]]:
     def clean(s: str) -> str:
         return unicodedata.normalize(
             'NFC',
@@ -67,7 +72,7 @@ def build_pos_lookup(lemma_raw: pd.Series, pos: pd.Series) -> dict[str, str]:
         )
     lookup = {}
     for lemma, tag in zip(lemma_raw, pos):
-        if isinstance(lemma, str) and isinstance(tag, str):
+        if isinstance(lemma, str) and isinstance(tag, list):
             lookup[clean(lemma)] = tag
     return lookup
 
@@ -98,6 +103,7 @@ def filter_kb(
     source_pos:       str,
     destination_pos:  str,
     prefix:           str,
+    suffix :          str,
     search_type:      str,
     # positional multi filters — None entries mean "Any / skip"
     multi_bases:      list[str | None] | None = None,
@@ -123,11 +129,14 @@ def filter_kb(
 
     # ── destination (lemma) POS ───────────────────────────────────────────────
     if destination_pos != 'Any':
-        mask &= df['part_of_speech'] == destination_pos
-
+        mask &= df['part_of_speech'].apply(lambda lst: destination_pos in lst)
     # ── prefix ────────────────────────────────────────────────────────────────
     if prefix != 'Any':
         mask &= df['prefix_betacode'].apply(lambda lst: prefix in lst)
+
+    # ── suffix ────────────────────────────────────────────────────────────────
+    if suffix != 'Any':
+        mask &= df['suffix_betacode'].apply(lambda lst: suffix in lst)
 
     # ── single base (classic mode) ────────────────────────────────────────────
     if lemma is not None:
@@ -135,7 +144,9 @@ def filter_kb(
 
     # ── single source POS (classic mode) — works independently of base ────────
     if source_pos != 'Any':
-        mask &= df['derivation_last_pos'] == source_pos
+        mask &= df['derivation_last_pos'].apply(
+            lambda pos: isinstance(pos, list) and source_pos in pos
+        )
 
     # ── length range (multi mode only) ───────────────────────────────────────
     # Applied before positional checks so the range is always enforced.
@@ -169,8 +180,9 @@ def filter_kb(
             if pos_val is not None and pos_val != 'Any':
                 mask &= df['derivation_raw'].apply(
                     lambda lst, idx=i, p=pos_val: (
-                        idx < len(lst) and
-                        pos_lookup.get(_clean_key(lst[idx])) == p
+                            idx < len(lst) and
+                            isinstance(pos_lookup.get(_clean_key(lst[idx])), list) and
+                            p in pos_lookup.get(_clean_key(lst[idx]), [])
                     )
                 )
 
@@ -188,7 +200,7 @@ kb         = load_data()
 pos_lookup = build_pos_lookup(kb['lemma_raw'], kb['part_of_speech'])
 kb['derivation_last_pos'] = kb['derivation_last'].map(pos_lookup)
 
-sorted_prefixes, compounds = load_filter_options()
+sorted_prefixes, sorted_suffixes, compounds = load_filter_options()
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -196,152 +208,144 @@ sorted_prefixes, compounds = load_filter_options()
 # ══════════════════════════════════════════════════════════════════════════════
 
 # Toggle + min/max selectors all on one compact row.
-tog_col, _, slider_col = st.columns([3, 0.5, 5])
+tog_col, _, slider_col = st.columns([3.5, 0.5, 4.5])
 
 with tog_col:
     multiple_bases = st.toggle(
-        'Advanced base search',
+        'Advanced composition query',
         value=False,
         key='multiple_bases',
         help=(
-            'Activate to specify bases and/or their POS by position '
-            '(e.g. Base 1 = μυρτάς, POS 2 = verb). '
+            'Activate to specify compounding lexemes and/or their POS by position '
+            '(e.g. Lexeme 1 = μυρτάς, POS 2 = verb). '
             'Leave any slot on *Any* to skip it. '
-            'Use Min / Max to restrict by number of bases in the result.'
+            'Use Min / Max to restrict by number of compounding lexemes in the result.'
         ),
     )
 
 if multiple_bases:
     with slider_col:
-        min_bases_val, max_bases_val = st.select_slider('Select a minumum and a maximum number of bases',
+        min_bases_val, max_bases_val = st.select_slider('Select a min and a max number of compounding lexemes',
                                                         options= range(MIN_BASES, MAX_BASES + 1), value=(2, 6),
-                                                        key='min_max_bases', help='Only return words whose decomposition'
+                                                        key='min_max_bases', help='Only return words whose compounding chain'
                                                                                   ' has at least the number of minimum '
-                                                                                  'bases and up to the number of maximum '
-                                                                                  'bases')
+                                                                                  'compounding lexemes and up to the number of maximum '
+                                                                                  'compounding lexemes')
     n_slots = max_bases_val
 else:
     min_bases_val = None
     max_bases_val = None
     n_slots       = None
 
-# ── Base input(s) ─────────────────────────────────────────────────────────────
+# ── Base input(s) + POS — merged into one section ────────────────────────────
 if multiple_bases:
     multi_base_values: list[str | None] = []
+    multi_pos_values:  list[str | None] = []
+
+    # All Lexeme rows first
     for row_start in range(0, n_slots, 3):
         row_range = list(range(row_start, min(row_start + 3, n_slots)))
         n_cols = len(row_range)
-        if n_cols == 2:
-            col_a, _, col_b = st.columns([4, 0.5, 4])
-            for col, i in zip([col_a, col_b], row_range):
-                with col:
-                    val = st.selectbox(
-                        f"Base {i + 1}",
-                        options=['Any'] + compounds,
-                        key=f'multi_base_{i}',
-                        index=0,
-                    )
-                    multi_base_values.append(val if val != 'Any' else None)
-        else:
-            cols = st.columns(n_cols)
-            for col, i in zip(cols, row_range):
-                with col:
-                    val = st.selectbox(
-                        f"Base {i + 1}",
-                        options=['Any'] + compounds,
-                        key=f'multi_base_{i}',
-                        index=0,
-                    )
-                    multi_base_values.append(val if val != 'Any' else None)
+        col_specs = [4] if n_cols == 1 else [4, 0.5, 4] if n_cols == 2 else [4, 0.5, 4, 0.5, 4]
+        cols = st.columns(col_specs)
+        for col, i in zip(cols[::2], row_range):
+            with col:
+                val = st.selectbox(
+                    f"Lexeme {i + 1}",
+                    options=['Any'] + compounds,
+                    key=f'multi_base_{i}',
+                    index=0,
+                )
+                multi_base_values.append(val if val != 'Any' else None)
+
     st.space()
 
-else:
-    multi_base_values = None
-    search_lemma = st.selectbox(
-        'Search by base',
-        options=['Any'] + compounds,
-        key='conv_lemma_select',
-        index=0,
-        help=(
-            'Both Ancient Greek alphabet and betacode inputs are accepted.\n'
-            'Greek inputs must carry correct diacritics.\n'
-            'Betacode inputs must be stripped of diacritics.'
-        ),
-    )
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# SECTION 2 — Base POS
-# ══════════════════════════════════════════════════════════════════════════════
-
-if multiple_bases:
-    multi_pos_values: list[str | None] = []
+    # All POS rows after
     for row_start in range(0, n_slots, 3):
-        row_range = range(row_start, min(row_start + 3, n_slots))
-        n_cols = len(list(row_range))
-        if n_cols == 2:
-            col_a, _, col_b = st.columns([4, 0.5, 4])
-            for col, i in zip([col_a, col_b], row_range):
-                with col:
-                    val = st.selectbox(
-                        f"Base {i + 1} POS",
-                        options=list(POS_OPTIONS),
-                        key=f'multi_pos_{i}',
-                        index=0,
-                    )
-                    multi_pos_values.append(val if val != 'Any' else None)
+        row_range = list(range(row_start, min(row_start + 3, n_slots)))
+        n_cols = len(row_range)
+        col_specs = [4] if n_cols == 1 else [4, 0.5, 4] if n_cols == 2 else [4, 0.5, 4, 0.5, 4]
+        cols = st.columns(col_specs)
+        for col, i in zip(cols[::2], row_range):
+            with col:
+                val = st.selectbox(
+                    f"Lexeme {i + 1} POS",
+                    options=list(POS_OPTIONS),
+                    key=f'multi_pos_{i}',
+                    index=0,
+                )
+                multi_pos_values.append(val if val != 'Any' else None)
 
-        else:
-            cols = st.columns(n_cols)
-            for col, i in zip(cols, row_range):
-                with col:
-                    val = st.selectbox(
-                        f"Base {i + 1} POS",
-                        options=list(POS_OPTIONS),
-                        key=f'multi_pos_{i}',
-                        index=0,
-                    )
-                    multi_pos_values.append(val if val != 'Any' else None)
     st.space()
 
 else:
-    multi_pos_values = None
-    search_source_pos = st.selectbox(
-        'Search by base part of speech',
-        options=POS_OPTIONS,
-        key='conv_source_pos_select',
-        index=0,
-    )
+    # Non-advanced: lemma and its POS in the same row
+    multi_base_values = None
+    multi_pos_values  = None
+
+    col1, _, col2 = st.columns([4, 0.3, 4])
+    with col1:
+        search_lemma = st.selectbox(
+            'Search by base/compounding lexeme',
+            options=['Any'] + compounds,
+            key='conv_lemma_select',
+            index=0,
+            help=(
+                'Both Ancient Greek alphabet and betacode inputs are accepted.\n'
+                'Both types of input must be stripped of diacritics'
+            ),
+        )
+    with col2:
+        search_source_pos = st.selectbox(
+            'Search by base/compounding lexeme part of speech',
+            options=POS_OPTIONS,
+            key='conv_source_pos_select',
+            index=0,
+        )
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 3 — Lemma POS · Prefix · Search type
 # ══════════════════════════════════════════════════════════════════════════════
-
-col1, _, col2 = st.columns([4, 0.5, 4])
+col1, _, col2, __, col3 = st.columns([4, 0.5, 4, 0.5, 4])
 with col1:
     search_destination_pos = st.selectbox(
-        'Search by lemma part of speech',
+        'Search by entry part of speech',
         options=POS_OPTIONS,
         key='conv_dest_pos_select',
         index=0,
     )
+
 with col2:
     search_prefix = st.selectbox(
-        'Search by prefix',
+        'Search by entry prefix',
         options=sorted_prefixes,
         index=0,
         key='conv_prefix_select',
-        help=(
-            'Both Ancient Greek alphabet and betacode inputs are accepted.\n'
-            'Both types must be stripped of diacritics.'
-        ),
+        help=('Both Ancient Greek alphabet and betacode inputs are accepted.\n'
+              'Both types must be stripped of diacritics.'),
+    )
+
+with col3:
+    search_suffix = st.selectbox(
+        'Search by entry suffix',
+        options=sorted_suffixes,
+        index=240,
+        key='conv_suffix_select',
+        help=('Both Ancient Greek alphabet and betacode inputs are accepted.\n'
+            'Both types must be stripped of diacritics.'),
     )
 
 prefix_val = (
     str(search_prefix).split(' / ')[1]
     if ' / ' in str(search_prefix)
     else str(search_prefix)
+)
+
+suffix_val = (
+    str(search_suffix).split(' / ')[1]
+    if ' / ' in str(search_suffix)
+    else str(search_suffix)
 )
 
 if prefix_val != 'Any' or multiple_bases:
@@ -401,6 +405,7 @@ if start:
         lemma is None
         and dest_pos_val   == 'Any'
         and prefix_val     == 'Any'
+        and suffix_val == 'Any'
         and source_pos_val == 'Any'
         and not multi_bases_active
         and not multi_pos_active
@@ -417,6 +422,7 @@ if start:
             source_pos      = source_pos_val,
             destination_pos = dest_pos_val,
             prefix          = prefix_val,
+            suffix          = suffix_val,
             search_type     = str(search_type) if search_type else 'All',
             multi_bases     = multi_base_values if multiple_bases else None,
             multi_pos       = multi_pos_values  if multiple_bases else None,

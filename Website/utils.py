@@ -113,13 +113,12 @@ def create_export(results: pd.DataFrame) -> bytes:
         'Meaning': results['meaning'].fillna(''),
         'LSJ Link': results['url'].apply(clean_url),
         'Derivation': results['derivation'].fillna(''),
-        'Part of speech': results['part_of_speech'].fillna(''),
+        'Part of speech': results['part_of_speech'].apply(
+            lambda pos: f"{', '.join(pos)}" if isinstance(pos, list) and pos else ''),
         'Prefix': results['prefix'].apply(
-            lambda p: f"{'-, '.join(p)}-" if isinstance(p, list) and p else ''
-        ),
-        #'Suffix': results['suffix_ag'].apply(
-            #lambda s: f'-{s}' if isinstance(s, str) else ''
-        #),
+            lambda p: f"{'-, '.join(p)}-" if isinstance(p, list) and p else ''),
+        'Suffix': results['suffix'].apply(
+            lambda s: f"{', '.join(s)}" if isinstance(s, list) and s else ''),
     })
     return export.to_csv(index=False).encode('utf-8')
 
@@ -144,11 +143,15 @@ def render_results(results: pd.DataFrame, page_key: str = '_page') -> None:
     # ── Summary table (only when results are numerous enough to warrant it) ──
     if total >= SUMMARY_THRESHOLD:
         st.dataframe(
-            results[['lemma', 'meaning', 'part_of_speech', 'derivation']].rename(columns={
+            results[['lemma', 'meaning', 'part_of_speech', 'derivation']].assign(
+                part_of_speech=results['part_of_speech'].apply(
+                    lambda x: ', '.join(x) if isinstance(x, list) else x
+                )
+            ).rename(columns={
                 'lemma': 'Lemma',
                 'meaning': 'Meaning',
                 'part_of_speech': 'Part of speech',
-                'derivation': 'Derivation base',
+                'derivation': 'Word formation',
             }).fillna(''),
             use_container_width=True,
             hide_index=True,
@@ -236,11 +239,12 @@ def render_results(results: pd.DataFrame, page_key: str = '_page') -> None:
         # ── Row 1: Derivational base | Part of speech ────────────────────────
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown(field_label('Derivation base'), unsafe_allow_html=True)
+            st.markdown(field_label('Word formation'), unsafe_allow_html=True)
             st.text(row['derivation'] if isinstance(row['derivation'], str) else '—')
         with col2:
             st.markdown(field_label('Part of speech'), unsafe_allow_html=True)
-            st.text(row['part_of_speech'] if isinstance(row['part_of_speech'], str) else '—')
+            if isinstance(row['part_of_speech'], list) and row['part_of_speech']:
+                st.text(', '.join(row['part_of_speech']))
 
         # ── Row 2: Prefix | Suffix ───────────────────────────────────────────
         col3, col4 = st.columns(2)
@@ -250,8 +254,11 @@ def render_results(results: pd.DataFrame, page_key: str = '_page') -> None:
                 st.text(f"{'-, '.join(row['prefix'])}-")
             else:
                 st.text('—')
-        #with col4:
-            #st.markdown(field_label('Suffix'), unsafe_allow_html=True)
-            #st.text(f"-{row['suffix_ag']}" if isinstance(row['suffix_ag'], str) else '—')
+        with col4:
+            st.markdown(field_label('Suffix'), unsafe_allow_html=True)
+            if isinstance(row['suffix'], list) and row['suffix']:
+                st.text(', '.join(row['suffix']))
+            else:
+                st.text('—')
 
         st.divider()

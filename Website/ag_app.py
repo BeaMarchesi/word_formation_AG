@@ -8,11 +8,16 @@ render_top_right_logos([
     {'path': 'Website/Images/90690393.png', 'url': 'https://www.unipv.it',                  'alt': 'UniPV'},
 ])
 
-home = st.Page("home_page.py", title="Home",default=True)
-entry = st.Page("entry_search.py", title="Search by entry")
-derivation = st.Page("derivation_search.py", title="Search by composition or derivation")
+pages = {
+    "Home": [
+        st.Page("home_page.py", title="About the resource"),
+        st.Page("team.py", title="Team"),
+    ],
+    "Query the database": [
+        st.Page("entry_search.py", title="Search by entry"),
+        st.Page("derivation_search.py", title="Search by derivation or composition"),
+    ],
+}
 
-pg = st.navigation([home, entry, derivation])
-
+pg = st.navigation(pages)
 pg.run()
-
