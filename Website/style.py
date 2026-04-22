@@ -91,3 +91,79 @@ def apply_style():
     }
     </style>
     """, unsafe_allow_html=True)
+
+'''
+def add_sidebar_logos():
+    with open("/Users/beatrice/Desktop/PycharmProjects/Tesi IUSS/Images/logo_larl_rosso.png", "rb") as f:
+        logo1 = base64.b64encode(f.read()).decode()
+
+    with open("/Users/beatrice/Desktop/PycharmProjects/Tesi IUSS/Images/logo_larl_rosso.png", "rb") as f:
+        logo2 = base64.b64encode(f.read()).decode()
+
+    st.sidebar.markdown(
+        f"""
+        <style>
+        .sidebar-logos {{
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+        }}
+        .sidebar-logos img {{
+            margin-bottom: 10px;
+        }}
+        </style>
+
+        <div class="sidebar-logos">
+            <img src="data:image/png;base64,{logo1}" width="140"><br>
+            <img src="data:image/png;base64,{logo2}" width="120">
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.sidebar.markdown(
+        """
+        <style>
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .sidebar-top {
+            flex-grow: 1;
+        }
+
+        .sidebar-logos {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Wrap sidebar content
+    st.sidebar.markdown('<div class="sidebar-content">', unsafe_allow_html=True)
+    st.sidebar.markdown('<div class="sidebar-top">', unsafe_allow_html=True)
+
+    # ---- your normal sidebar content happens here ----
+    # (navigation, selectboxes, etc.)
+
+    st.sidebar.markdown('</div>', unsafe_allow_html=True)
+
+    # ---- Logos at bottom ----
+    st.sidebar.markdown(
+        """
+        <div class="sidebar-logos">
+            <img src="logo1.png" width="130"><br><br>
+            <img src="logo2.png" width="120">
+        </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+'''

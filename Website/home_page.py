@@ -1,6 +1,7 @@
 import streamlit as st
+import pandas as pd
 from style import apply_style
-from utils import BRAND_COLOR, render_sidebar_logos
+from utils import BRAND_COLOR
 
 apply_style()
 
@@ -9,97 +10,130 @@ LOGO_LINK = 'https://linguisticapavia.cdl.unipv.it/it'
 st.logo(LOGO_PATH, size='large', link=LOGO_LINK, icon_image=None)
 
 
-# ── Title ─────────────────────────────────────────────────────────────────────
+# ── Hero ──────────────────────────────────────────────────────────────────────
 
 st.markdown(
-    f"<h1 style='text-align: center; color: {BRAND_COLOR};'>Word Formation in Ancient Greek</h1>",
-    unsafe_allow_html=True,
-)
-st.markdown(
-    "<p style='text-align: center; color: grey; font-size: 0.95rem;'>"
-    "A morphological database of the Ancient Greek lexicon"
-    "</p>",
+    f"""
+    <div style='text-align: center; padding: 2rem 0 1rem;'>
+        <p style='color: grey; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.5rem;'>
+            University of Pavia
+        </p>
+        <h1 style='color: {BRAND_COLOR}; font-size: 2.4rem; margin: 0.25rem 0;'>
+            Word Formation in Ancient Greek
+        </h1>
+        <p style='color: grey; font-size: 1rem; margin-top: 0.5rem;'>
+            A queryable database of derivational morphology
+        </p>
+    </div>
+    """,
     unsafe_allow_html=True,
 )
 st.divider()
+
 
 # ── About ─────────────────────────────────────────────────────────────────────
 
-st.markdown(
-    f"<h3 style='color: {BRAND_COLOR};'>About</h3>",
-    unsafe_allow_html=True,
-)
+st.markdown(f"<h3 style='color: {BRAND_COLOR};'>About</h3>", unsafe_allow_html=True)
 st.markdown("""
-This interface provides structured access to a knowledge base of **133,000+ Ancient Greek lemmas**,
-annotated for morphological structure, derivational history, and part of speech.
-Each entry is linked to the corresponding LSJ (*Liddell–Scott–Jones Greek–English Lexicon*) entry
-for full lexicographic reference.
+This interface provides structured, queryable access to a derivational morphology database
+for Ancient Greek, developed at the University of Pavia. The dataset is built on the Brill
+dictionary and enriched with affix information, POS tags, and semantic data.
 
-The database distinguishes between **composition** (two or more independent bases)
-and **derivation** (a single base with affixal morphology), and records prefixes and suffixes
-in both normalised Greek and betacode transcription to support flexible querying.
+All data and source code are openly available on
+[GitHub](https://github.com/BeaMarchesi/word_formation_AG).
+The resource is a work in progress; please consult the companion paper for a full
+account of its current scope, limitations, and planned extensions.
 """)
 
 st.divider()
 
-# ── Search modes ──────────────────────────────────────────────────────────────
 
-st.markdown(
-    f"<h3 style='color: {BRAND_COLOR};'>Search modes</h3>",
-    unsafe_allow_html=True,
-)
+# ── Data Collection ───────────────────────────────────────────────────────────
 
-col1, col2 = st.columns(2)
+st.markdown(f"<h3 style='color: {BRAND_COLOR};'>Data Collection</h3>", unsafe_allow_html=True)
+st.markdown(f"""
+The database integrates the following layers of information:
 
-with col1:
-    st.markdown("**🔍 Search by lemma**")
-    st.markdown(
-        "Retrieve the full morphological record for a specific lemma. "
-        "Accepts both Unicode Greek and betacode input. Homographs are listed separately."
-    )
-    st.markdown("**📂 Search by part of speech and affix**")
-    st.markdown(
-        "Filter the lexicon by any combination of part of speech, prefix, and suffix "
-        "to retrieve all matching derived or compound forms."
-    )
+**Lemmas and word-formation data** — extracted from the digitised Brill Dictionary, including
+prefix information.
 
-with col2:
-    st.markdown("**🔗 Search by lemma and part of speech**")
-    st.markdown(
-        "Given a base lemma, retrieve all words in which it appears as an etymological component, "
-        "with optional filtering by part of speech and by word-formation type "
-        "(composition vs. derivation)."
-    )
-    st.markdown("**🧩 Search by lemma and affix**")
-    st.markdown(
-        "Combine an etymological base with one or more affixes to retrieve words "
-        "formed by a specific morphological pattern."
-    )
+**Part-of-speech tags** — sourced from Wiktionary where available (~20k entries, ~15% of
+the data); otherwise assigned automatically by the transformer-based parser *odyCy*.
+
+**Suffix data** — sourced from Wiktionary where available (~6.6k entries, ~5% of the data).
+For the suffixes *-τηρ* and *-τωρ*, automatic extraction followed by manual validation was applied.
+<span style='color: #c0392b;'>⚠ Suffix coverage is still partial</span>, expanding it is a primary goal for future releases.
+
+**Semantic information** — retrieved from the LSJ Lexicon via the Perseus Digital Library,
+supplemented by direct links to the corresponding Perseus entries.
+
+For full methodological details and caveats, see the companion paper and GitHub repository.
+""", unsafe_allow_html=True)
 
 st.divider()
 
-# ── Data & methodology note ───────────────────────────────────────────────────
 
-st.markdown(
-    f"<h3 style='color: {BRAND_COLOR};'>Data and methodology</h3>",
-    unsafe_allow_html=True,
-)
+# ── Resource Structure ────────────────────────────────────────────────────────
+
+st.markdown(f"<h3 style='color: {BRAND_COLOR};'>How to Use</h3>", unsafe_allow_html=True)
 st.markdown("""
-Morphological annotations follow the conventions of the LARL research group
-at the University of Pavia. Etymological segmentation is based on
-the *Dictionnaire étymologique de la langue grecque* (Chantraine) and the LSJ,
-with computational disambiguation of ambiguous formations.
-Betacode encoding follows the TLG standard.
+The database supports two query modes: **by entry** and **by derivation/composition**.
 
-Results can be exported as CSV for use in external corpus tools or spreadsheet software.
+Depending on the mode, searchable parameters include lemma, part of speech, prefix, suffix,
+derivational/compositional lexeme(s)/, lexeme POS, and number of lexemes. Results are displayed both as an overview
+table and as individual detailed records, showing all available data for each match. 
+Query results can be exported as CSV.
 """)
 
 st.divider()
 
-st.markdown(
-    "<p style='text-align: center; color: grey; font-size: 0.85rem;'>"
-    "LARL — Laboratorio di Linguistica e Archeologia del Mondo Romano e della Grecia Antica · "
-    "Università degli Studi di Pavia"
-    "</p>",
-    unsafe_allow_html=True,
+
+# ── How to Cite ───────────────────────────────────────────────────────────────
+
+st.markdown(f"<h3 style='color: {BRAND_COLOR};'>How to Cite</h3>", unsafe_allow_html=True)
+st.markdown("""
+If you use this resource, please cite:
+
+> Marchesi, Beatrice. *Ancient Greek Word Formation*. Master's Thesis, IUSS Pavia, 2026.
+
+Please refer to the thesis for a detailed discussion of the resource's design, coverage,
+and current limitations.
+""")
+
+st.divider()
+
+
+# ── Contacts ──────────────────────────────────────────────────────────────────
+
+st.markdown(f"<h3 style='color: {BRAND_COLOR};'>Contacts</h3>", unsafe_allow_html=True)
+st.markdown("""
+For enquiries or to report issues, please contact:
+
+- **Prof. Chiara Zanchi** — [chiara.zanchi@unipv.it](mailto:chiara.zanchi@unipv.it)
+- **Prof. Virginia Mastellari** — [virginia.mastellari@unipv.it](mailto:virginia.mastellari@unipv.it)
+""")
+
+st.divider()
+
+
+# ── Contribute ────────────────────────────────────────────────────────────────
+
+st.markdown(f"<h3 style='color: {BRAND_COLOR};'>Contribute</h3>", unsafe_allow_html=True)
+st.markdown("""
+We welcome contributions of new data. If you would like to share annotations or corrections,
+please download the CSV template below, structure your data accordingly, and contact
+Prof. Zanchi or Prof. Mastellari. Contributors who share data will be acknowledged in the Team section.
+""")
+
+df = pd.read_csv('Website/template.csv', sep =';')
+
+st.download_button(
+    'Download template',
+    data=df.to_csv(index=False),
+    file_name='WFAG_template.csv',
+    mime='text/csv',
+    icon_position='right',
+    help='Click to download the csv template of the database structure',
+    on_click='ignore',
+    key=1
 )
