@@ -319,7 +319,7 @@ with col1:
 with col2:
     search_prefix = st.selectbox(
         'Search by entry prefix',
-        options=sorted_prefixes,
+        options= ['Any'] + sorted_prefixes,
         index=0,
         key='conv_prefix_select',
         help=('Both Ancient Greek alphabet and betacode inputs are accepted.\n'
@@ -329,8 +329,8 @@ with col2:
 with col3:
     search_suffix = st.selectbox(
         'Search by entry suffix',
-        options=sorted_suffixes,
-        index=240,
+        options= ['Any'] +sorted_suffixes,
+        index=0,
         key='conv_suffix_select',
         help=('Both Ancient Greek alphabet and betacode inputs are accepted.\n'
             'Both types must be stripped of diacritics.'),
