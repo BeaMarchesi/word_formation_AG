@@ -20,13 +20,29 @@ POS_OPTIONS = (
     'Affix', 'Other', 'Symbol', 'Phrase', 'Contraction'
 )
 
+def strip_diacritics(text: str) -> str:
+    """Remove ALL combining diacritics (category Mn), return plain base letters."""
+    decomposed = unicodedata.normalize("NFD", text)
+    return unicodedata.normalize(
+        "NFC",
+        "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn"),
+    )
+
 @st.cache_data(show_spinner=False)
 def load_data() -> pd.DataFrame:
     from ast import literal_eval
-    return pd.read_csv(CSV_PATH, converters={'derivation_raw': literal_eval, 'prefix': literal_eval,
-                                             'suffix': literal_eval, 'suffix_betacode': literal_eval,
-                                             'part_of_speech': literal_eval,})
-
+    df = pd.read_csv(CSV_PATH, converters={
+        'derivation_raw': literal_eval,
+        'prefix': literal_eval,
+        'prefix_betacode': literal_eval,
+        'suffix': literal_eval,
+        'suffix_betacode': literal_eval,
+        'part_of_speech': literal_eval,
+    })
+    df['lemma_raw_stripped'] = df['lemma_raw'].apply(
+        lambda x: strip_diacritics(x) if isinstance(x, str) else x
+    )
+    return df
 
 @st.cache_data(show_spinner=False)
 def build_lookup(lemma_raw: pd.Series, betacode_raw: pd.Series) -> dict:
@@ -61,8 +77,11 @@ def filter_kb(df: pd.DataFrame, lemma: str, pos: str, prefix: str, suffix: str) 
     """Apply the active filters using pandas boolean masks — no Python loops."""
     mask = pd.Series(True, index=df.index)
 
+    print(f"DEBUG — lemma={repr(lemma)}, pos={repr(pos)}, prefix={repr(prefix)}, suffix={repr(suffix)}")
+
+
     if lemma:
-        mask &= df['lemma_raw'] == lemma
+        mask &= df['lemma_raw_stripped'] == lemma
 
     if pos != 'Any':
         mask &= df['part_of_speech'].apply(lambda lst: pos in lst)
@@ -111,7 +130,7 @@ with col2:
                                   'Both types of input must be stripped of diacritics')
 
 with col3:
-    search_suffix = st.selectbox('Search by suffix', options=sorted_suffixes, key='suffix_select', index=240,
+    search_suffix = st.selectbox('Search by suffix', options=['Any'] + sorted_suffixes, key='suffix_select', index=0,
                                  help='Both inputs in the Ancient Greek alphabet and in betacode are accepted. \n'
                                       'Both types of input must be stripped of diacritics')
 
@@ -121,7 +140,9 @@ with col:
 
 if start:
     prefix_val = str(search_prefix).split(' / ')[1] if ' / ' in str(search_prefix) else str(search_prefix)
-    suffix_val = str(search_suffix).split(' / ')[1] if ' / ' in str(search_suffix) else str(search_suffix)
+    suffix_val = 'Any' if not search_suffix else (
+        str(search_suffix).split(' / ')[1] if ' / ' in str(search_suffix) else str(search_suffix)
+    )
     pos_val = str(search_pos)
     if not search_lemma and pos_val == 'Any' and prefix_val == 'Any' and suffix_val == 'Any':
         st.error('Please select at least a value')
