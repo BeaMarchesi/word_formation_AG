@@ -68,8 +68,8 @@ def load_filter_options() -> tuple[list, list]:
 @st.cache_data(show_spinner=False)
 def build_options(query_lemmas: pd.Series) -> list[str]:
     """Return sorted display labels, safely dropping NaN floats."""
-    return sorted(
-        [v for v in query_lemmas if isinstance(v, str)],
+    return sorted(list(set(
+        [v for v in query_lemmas if isinstance(v, str)])),
         key=str.casefold,
     )
 
