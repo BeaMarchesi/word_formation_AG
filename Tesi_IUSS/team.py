@@ -36,7 +36,7 @@ TEAM = [
         "name": "Beatrice Marchesi",
         "affiliation": "University of Pavia, IUSS Pavia",
         "email": 'beatrice.marchesi03@universitadipavia.it',
-        "photo_path": 'Tesi IUSS/Images/IMG_7639.png',
+        "photo_path": 'Tesi_IUSS/Images/IMG_7639.png',
     },
     {
         "name": "Chiara Zanchi",
