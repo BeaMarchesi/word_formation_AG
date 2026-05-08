@@ -117,7 +117,7 @@ please download the CSV template below, structure your data accordingly, and con
 Prof. Zanchi. Contributors who share data will be acknowledged in the Team section.
 """)
 
-df = pd.read_csv('Website/template.csv', sep =';')
+df = pd.read_csv('Tesi IUSS/template.csv', sep =';')
 
 st.download_button(
     'Download template',

@@ -6,7 +6,7 @@ from style import apply_style
 
 apply_style()
 
-CSV_PATH    = 'Website/kb.csv'
+CSV_PATH    = 'Tesi IUSS/kb.csv'
 
 POS_OPTIONS = (
     'Any', 'Adjective', 'Verb', 'Noun', 'Adverb',
@@ -51,10 +51,10 @@ def load_data() -> pd.DataFrame:
 
 @st.cache_data(show_spinner=False)
 def load_filter_options() -> tuple[list, list]:
-    prefixes  = sorted(pd.read_csv('Website/unique_prefixes.csv')['prefix'].tolist())
-    suffixes = pd.read_csv('Website/unique_suffixes.csv')['suffix'].tolist()
+    prefixes  = sorted(pd.read_csv('Tesi IUSS/unique_prefixes.csv')['prefix'].tolist())
+    suffixes = pd.read_csv('Tesi IUSS/unique_suffixes.csv')['suffix'].tolist()
     compounds = sorted(
-        pd.read_csv('Website/unique_bases.csv')['base'].tolist(),
+        pd.read_csv('Tesi IUSS/unique_bases.csv')['base'].tolist(),
         key=str.casefold,
     )
     return prefixes, suffixes, compounds

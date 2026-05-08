@@ -9,7 +9,7 @@ from style import apply_style
 
 apply_style()
 
-CSV_PATH = 'Website/kb.csv'
+CSV_PATH = 'Tesi IUSS/kb.csv'
 
 POS_OPTIONS = (
     'Any', 'Adjective', 'Verb', 'Noun', 'Adverb',
@@ -58,8 +58,8 @@ def build_lookup(lemma_raw: pd.Series, betacode_raw: pd.Series) -> dict:
 
 @st.cache_data(show_spinner=False)
 def load_filter_options() -> tuple[list, list]:
-    suffixes = pd.read_csv('Website/unique_suffixes.csv')['suffix'].tolist()
-    prefixes = pd.read_csv('Website/unique_prefixes.csv')['prefix'].tolist()
+    suffixes = pd.read_csv('Tesi IUSS/unique_suffixes.csv')['suffix'].tolist()
+    prefixes = pd.read_csv('Tesi IUSS/unique_prefixes.csv')['prefix'].tolist()
     return sorted(suffixes), sorted(prefixes)
 
 
