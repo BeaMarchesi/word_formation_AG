@@ -387,6 +387,7 @@ if start:
 
     if multiple_bases:
         lemma          = None
+        lemma_bc       = None 
         source_pos_val = 'Any'
     else:
         lemma = (
@@ -403,7 +404,7 @@ if start:
         )
 
     multi_bases_active = multi_base_values and any(v is not None for v in multi_base_values)
-    multi_pos_active   = multi_pos_values   and any(v is not None for v in multi_pos_values)
+    multi_pos_active   = multi_pos_values and any(v is not None for v in multi_pos_values)
     # In multi mode, even if all slots are Any, the min/max range itself counts
     # as an active filter (user explicitly chose to restrict by length).
     range_active = multiple_bases  # min/max are always set when toggle is on
