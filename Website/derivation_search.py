@@ -45,9 +45,17 @@ def load_data() -> pd.DataFrame:
         return lst[-1] if isinstance(lst, list) and lst else None
 
     df['derivation_last'] = df['derivation_raw'].apply(get_last)
-    df['derivation_join'] = df['derivation_raw'].apply(
-        lambda x: '|'.join(x) if isinstance(x, list) else ''
+
+    def _strip_diacritics(s: str) -> str:
+        return ''.join(
+            c for c in unicodedata.normalize('NFD', s)
+            if unicodedata.category(c) != 'Mn'
+        )
+
+    df['derivation_raw_stripped'] = df['derivation_raw'].apply(
+        lambda lst: [_strip_diacritics(x) for x in lst] if isinstance(lst, list) else []
     )
+
     return df
 
 
@@ -140,8 +148,9 @@ def filter_kb(
 
     # ── single base (classic mode) ────────────────────────────────────────────
     if lemma is not None:
-        mask &= df['derivation_join'].str.contains(re.escape(lemma), na=False)
-
+        mask &= df['derivation_raw_stripped'].apply(lambda lst: isinstance(lst, list) and any(
+        item == lemma for item in lst
+    ))
     # ── single source POS (classic mode) — works independently of base ────────
     if source_pos != 'Any':
         mask &= df['derivation_last_pos'].apply(
