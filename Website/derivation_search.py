@@ -46,16 +46,6 @@ def load_data() -> pd.DataFrame:
 
     df['derivation_last'] = df['derivation_raw'].apply(get_last)
 
-    def _strip_diacritics(s: str) -> str:
-        return ''.join(
-            c for c in unicodedata.normalize('NFD', s)
-            if unicodedata.category(c) != 'Mn'
-        )
-
-    df['derivation_raw_stripped'] = df['derivation_raw'].apply(
-        lambda lst: [_strip_diacritics(x) for x in lst] if isinstance(lst, list) else []
-    )
-
     return df
 
 
@@ -91,6 +81,9 @@ def _clean_input(raw: str) -> str:
     """Normalise a user-supplied lemma / base string."""
     return unicodedata.normalize('NFC', re.sub(r'[)(\\\/=+|*]', '', raw.split(' / ')[0]))
 
+def _clean_input_betacode(raw: str) -> str:
+    parts = raw.split(' / ')
+    return parts[1].strip() if len(parts) > 1 else parts[0].strip()
 
 def _clean_key(s: str) -> str:
     """Same cleaning applied inside derivation_raw lists for POS lookup."""
@@ -108,6 +101,7 @@ def filter_kb(
     pos_lookup:       dict,
     # classic single-value filters
     lemma:            str | None,
+    lemma_bc:         str | None, 
     source_pos:       str,
     destination_pos:  str,
     prefix:           str,
@@ -147,10 +141,10 @@ def filter_kb(
         mask &= df['suffix_betacode'].apply(lambda lst: suffix in lst)
 
     # ── single base (classic mode) ────────────────────────────────────────────
-    if lemma is not None:
-        mask &= df['derivation_raw_stripped'].apply(lambda lst: isinstance(lst, list) and any(
-        item == lemma for item in lst
-    ))
+    if lemma_bc is not None:
+            mask &= df['derivation_betacode'].apply(
+                lambda lst, bc=lemma_bc: isinstance(lst, list) and any(item == bc for item in lst)
+            )
     # ── single source POS (classic mode) — works independently of base ────────
     if source_pos != 'Any':
         mask &= df['derivation_last_pos'].apply(
@@ -400,6 +394,10 @@ if start:
             if search_lemma and search_lemma != 'Any'
             else None
         )
+
+        lemma_bc = (_clean_input_betacode(search_lemma) if search_lemma 
+                    and search_lemma != 'Any' else None)
+        
         source_pos_val = (
             str(search_source_pos) if search_source_pos is not None else 'Any'
         )
@@ -428,6 +426,7 @@ if start:
             kb,
             pos_lookup,
             lemma           = lemma,
+            lemma_bc        = lemma_bc,
             source_pos      = source_pos_val,
             destination_pos = dest_pos_val,
             prefix          = prefix_val,
