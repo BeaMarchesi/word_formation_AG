@@ -138,7 +138,7 @@ st.download_button(
     key=1
 )
 
-st.image('Website/Images/logo_larl_rosso.png')
+st.image('Website/Images/loghi_prin_pnrr.jpg')
 
 # --- Footer ---
 st.markdown("---")
