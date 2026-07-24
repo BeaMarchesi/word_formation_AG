@@ -137,3 +137,50 @@ st.download_button(
     on_click='ignore',
     key=1
 )
+
+
+# --- Footer ---
+st.markdown("---")
+
+st.markdown(
+    """
+    <style>
+    .footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        text-align: center;
+        font-size: 0.85rem;
+        color: #555;
+        padding: 20px 0 10px 0;
+        flex-wrap: wrap;
+    }
+    .footer img {
+        height: 28px;
+        vertical-align: middle;
+    }
+    .footer a {
+        color: #b03050;
+        text-decoration: none;
+    }
+    .footer a:hover {
+        text-decoration: underline;
+    }
+    </style>
+
+    <div class="footer">
+        <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="CC">
+        <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="BY">
+        <span>
+            <em>Word Formation in Ancient Greek</em> edited by Beatrice Marchesi, Silvia Zampetta,
+            Virginia Mastellari, Luca Brigada Villa, Silvia Luraghi, and Chiara Zanchi
+            is licensed under a
+            <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">
+                Creative Commons Attribution 4.0 International License
+            </a>.
+        </span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
