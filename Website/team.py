@@ -40,7 +40,7 @@ TEAM = [
         "name": "Beatrice Marchesi",
         "affiliation": "University of Pavia, IUSS Pavia",
         "email": 'beatrice.marchesi03@universitadipavia.it',
-        "photo_path": 'Website/Images/IMG_7639.png',
+        "photo_path": 'Website/Images/Beatrice Marchesi.png',
     },
     {
         "name": "Chiara Zanchi",
@@ -52,13 +52,13 @@ TEAM = [
         "name": "Virginia Mastellari",
         "affiliation": "University of Pavia",
         "email": "virginia.mastellari@unipv.it",
-        "photo_path": None,
+        "photo_path": 'Website/Images/Virginia Mastellari.png',
     },
     {
         "name": "Silvia Zampetta",
         "affiliation": "University of Pavia",
         "email": 'silvia.zampetta01@universitadipavia.it',
-        "photo_path": None,
+        "photo_path": 'Website/Images/Silvia Zampetta.png',
     },
 {
         "name": "Luca Brigada Villa",
