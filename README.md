@@ -2,7 +2,7 @@
 
 **A queryable database and web interface for Ancient Greek derivational morphology.**
 
-This repository contains the data, processing code, and web application for a new resource dedicated to Ancient Greek word formation (derivation and composition). The resource was built by segmenting and enriching entries from the digitalized *Brill Dictionary of Ancient Greek* [Montanari, 2015] with part-of-speech tags, prefix/suffix information, and semantic data drawn from Wiktionary and the Liddell–Scott–Jones (LSJ) Lexicon via the Perseus Digital Library.
+This repository contains the data, processing code, and web application for a new resource dedicated to Ancient Greek word formation (derivation and composition). The resource was built by segmenting and enriching entries from the digitalized *Brill Dictionary of Ancient Greek* (Montanari, 2015) with part-of-speech tags, prefix/suffix information, and semantic data drawn from Wiktionary and the Liddell–Scott–Jones (LSJ) Lexicon via the Perseus Digital Library.
 
 The project is presented in the paper *"Toward Ancient Greek Word Formation: Getting to the Roots, Prefixes and (even) Suffixes"*, accepted at **CLiC-it 2026** (Twelfth Italian Conference on Computational Linguistics, Palermo, Italy, September 14–16, 2026).
 
@@ -43,7 +43,7 @@ The resource is a first stage in an ongoing project; see the [paper](#how-to-cit
 
 | Source | Used for |
 |---|---|
-| [Brill Dictionary of Ancient Greek](https://dictionaries.brillonline.com/montanari) [Montanari, 2015] | Lemmas, derivation/composition data, prefixes |
+| [Brill Dictionary of Ancient Greek](https://dictionaries.brillonline.com/montanari) (Montanari, 2015) | Lemmas, derivation/composition data, prefixes |
 | [Wiktionary](https://en.wiktionary.org/wiki/Wiktionary:Main_Page) | POS tags, suffix information |
 | [odyCy](https://centre-for-humanities-computing.github.io/odyCy/) | Automatic POS tagging for lemmas missing Wiktionary coverage |
 | [LSJ Lexicon via Perseus Digital Library](https://www.perseus.tufts.edu/) | Semantic (sense) information |
@@ -59,7 +59,7 @@ All results can be exported as CSV files directly from the interface.
 
 ## Limitations & future work
 
-This is a first-stage resource. Known limitations include residual POS-tagging errors, limited suffix coverage (~5% of entries), sense-extraction issues for homographs and lemmas without a direct LSJ match, and inconsistencies inherited from the source XML files. Planned future work includes systematic manual validation, expanded suffix coverage, and conversion into Linked Open Data (e.g., via OntoLex-Lemon) for interoperability with resources such as UDer, MorphyNet, and LiLa. See Section 5–6 of the paper for details.
+This is a first-stage resource. Known limitations include residual POS-tagging errors, limited suffix coverage (~5% of entries), sense-extraction issues for homographs and lemmas without a direct LSJ match, and inconsistencies inherited from the source XML files. Planned future work includes systematic manual validation, expanded suffix coverage, and conversion into Linked Open Data for interoperability with resources such as UDer, MorphyNet, and LiLa. See Section 5–6 of the paper for details.
 
 ## How to cite
 
