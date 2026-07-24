@@ -91,6 +91,11 @@ If you use this resource, please cite the following works:
 ```
 
 
-## License
+## Copyright
 
-This resource is made available for research purposes. Please refer to the corresponding paper and contact the authors for questions regarding reuse and licensing of the underlying data.
+*The Brill Dictionary of Ancient Greek*, authored by Franco Montanari, is copyrighted by [Brill](https://brill.com/).
+
+The dictionary entries are not reproduced. The data included here only serve to express, in structured form, the derivational relations (derivation bases, compounding elements, and affixes) that can be inferred from the original entries, and to link them to part-of-speech information (from [Wiktionary](https://en.wiktionary.org/) and [odyCy](https://centre-for-humanities-computing.github.io/odyCy/)) and to sense information drawn from the [LSJ Lexicon](https://www.perseus.tufts.edu/) via the [Perseus Digital Library](https://www.perseus.tufts.edu/), which is likewise not reproduced beyond top-level senses and a link to the original entry.
+
+[![Creative Commons License](https://i.creativecommons.org/l/by/4.0/88x31.png)](http://creativecommons.org/licenses/by/4.0/)
+The files in this repository are licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
