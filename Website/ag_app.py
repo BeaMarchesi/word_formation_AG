@@ -5,7 +5,7 @@ from utils import *
 
 render_top_right_logos([
     {'path': 'Website/Images/logo_larl_rosso.png',       'url': 'https://linguisticapavia.cdl.unipv.it', 'alt': 'LARL'},
-    {'path': 'Website/Images/90690393.png', 'url': 'https://www.unipv.it',                  'alt': 'UniPV'},
+    {'path': 'Website/Images/logo unipv.png', 'url': 'https://www.unipv.it',                  'alt': 'UniPV'},
 ])
 
 pages = {
