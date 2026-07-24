@@ -138,10 +138,11 @@ st.download_button(
     key=1
 )
 
-st.image('Website/Images/loghi_prin_pnrr.jpg')
-
 # --- Footer ---
 st.markdown("---")
+
+
+st.image('Website/Images/loghi_prin_pnrr.jpg')
 
 st.markdown(
     """
