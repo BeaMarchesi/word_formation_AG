@@ -64,8 +64,21 @@ This is a first-stage resource. Known limitations include residual POS-tagging e
 ## How to cite
 
 If you use this resource, please cite the following works:
-Paper (accepted at CLiC-it 2026; full proceedings citation — including pages and DOI — will be added once available):
-bibtex
+
+**Master's thesis** (the resource originates from this thesis project):
+
+```bibtex
+@mastersthesis{marchesi2026thesis,
+  title  = {Ancient {G}reek Word Formation},
+  author = {Marchesi, Beatrice},
+  school = {IUSS Pavia},
+  year   = {2026},
+}
+```
+
+**Paper** (accepted at CLiC-it 2026; full proceedings citation — including pages and DOI — will be added once available):
+
+```bibtex
 @inproceedings{marchesi2026wordformation,
   title     = {Toward Ancient {G}reek Word Formation: Getting to the Roots, Prefixes and (even) Suffixes},
   author    = {Marchesi, Beatrice and Zampetta, Silvia and Mastellari, Virginia and Brigada Villa, Luca and Luraghi, Silvia and Zanchi, Chiara},
@@ -75,14 +88,8 @@ bibtex
   month     = {September},
   note      = {Accepted for publication},
 }
-Master's thesis (the resource originates from this thesis project):
-bibtex
-@mastersthesis{marchesi2026thesis,
-  title  = {Ancient {G}reek Word Formation},
-  author = {Marchesi, Beatrice},
-  school = {IUSS Pavia},
-  year   = {2026},
-}
+```
+
 
 ## License
 
