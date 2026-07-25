@@ -173,7 +173,6 @@ st.markdown(
 
     <div class="footer">
         <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.svg" alt="CC">
-        <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png" alt="BY">
         <span>
             <em>Word Formation in Ancient Greek</em> edited by Beatrice Marchesi, Silvia Zampetta,
             Virginia Mastellari, Luca Brigada Villa, Silvia Luraghi, and Chiara Zanchi
