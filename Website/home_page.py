@@ -172,14 +172,14 @@ st.markdown(
     </style>
 
     <div class="footer">
-        <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="CC">
-        <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="BY">
+        <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.svg" alt="CC">
+        <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png" alt="BY">
         <span>
             <em>Word Formation in Ancient Greek</em> edited by Beatrice Marchesi, Silvia Zampetta,
             Virginia Mastellari, Luca Brigada Villa, Silvia Luraghi, and Chiara Zanchi
             is licensed under a
-            <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">
-                Creative Commons Attribution 4.0 International License
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank">
+                Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
             </a>.
         </span>
     </div>
