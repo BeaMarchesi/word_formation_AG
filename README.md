@@ -93,9 +93,9 @@ If you use this resource, please cite the following works:
 
 ## Copyright
 
-*The Brill Dictionary of Ancient Greek*, authored by Franco Montanari, is copyrighted by [Brill](https://brill.com/).
+*The Brill Dictionary of Ancient Greek*, is authored by prof. Franco Montanari, edited by Madeleine Goh and Chad Schroeder, and copyrighted by [Brill](https://brill.com/).
 
-The dictionary entries are not reproduced. The data included here only serve to express, in structured form, the derivational relations (derivation bases, compounding elements, and affixes) that can be inferred from the original entries, and to link them to part-of-speech information (from [Wiktionary](https://en.wiktionary.org/) and [odyCy](https://centre-for-humanities-computing.github.io/odyCy/)) and to sense information drawn from the [LSJ Lexicon](https://www.perseus.tufts.edu/) via the [Perseus Digital Library](https://www.perseus.tufts.edu/), which is likewise not reproduced beyond top-level senses and a link to the original entry.
+The dictionary entries are not represented. The dataset included here only represent derivational information on Ancient Greek lemmas, and provided by Brill under the framework of the PRIN_2022 call 2022YAPFNJ Linked WordNet for Indo-European Languages CUP F53D23004900001 and processed within the same project.
 
-[![Creative Commons License](https://i.creativecommons.org/l/by/4.0/88x31.png)](http://creativecommons.org/licenses/by/4.0/)
-The files in this repository are licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
+[![Creative Commons License](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)
+The files in this repository are licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en).
