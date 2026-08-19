@@ -77,9 +77,6 @@ def filter_kb(df: pd.DataFrame, lemma: str, pos: str, prefix: str, suffix: str) 
     """Apply the active filters using pandas boolean masks — no Python loops."""
     mask = pd.Series(True, index=df.index)
 
-    print(f"DEBUG — lemma={repr(lemma)}, pos={repr(pos)}, prefix={repr(prefix)}, suffix={repr(suffix)}")
-
-
     if lemma:
         mask &= df['lemma_raw_stripped'] == lemma
 
